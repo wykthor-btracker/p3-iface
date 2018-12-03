@@ -31,6 +31,23 @@ def user(userInst,userList):
     7. Editar perfil
     8. Sair
     """
+    if(choice=='1'):
+        name = input("Para quem deseja enviar a mensagem?")
+        attempt = userList.retrieveUser(name)
+        if(attempt):
+            if(isInstance(attempt,list)):
+                print("Escolha qual amigo para mandar a mensagem:")
+                for us in range(len(attempt)):
+                    print(attempt[us],us)
+
+
+    # if(choice=='2'):
+    # if(choice=='3'):
+    # if(choice=='4'):
+    # if(choice=='5'):
+    # if(choice=='6'):
+    # if(choice=='7'):
+    # if(choice=='8'):
 #functions#
 
 #main

@@ -115,9 +115,9 @@ class users:
 		else:
 			raise Exception("Username already in use.")
 
-	def retrieveUser(self,name = "",username = ""):
-		if(isIn(self.users,username)):
-			return self.users[username]
+	def retrieveUser(self,name = ""):
+		if(isIn(self.users,name)):
+			return self.users[name]
 		matches = {uName: userInst for uName, userInst in self.users.iteritems() if uName==name}
 		if(matches):
 			return matches
