@@ -1,14 +1,15 @@
+# -*- coding: utf-8 -*-
 #imports
 import re
 import pdb
 import hashlib
-pdb.set_trace()
+# pdb.set_trace()
 #imports#
 
 #variables#
-onlyLettersAndWhitespace = "^[a-zA-Z ]*$"
-lettersNumbersAndWhitespace = "^[\w ]*$"
-passwordPattern = "^[\w\W]*$"
+onlyLettersAndWhitespace = re.compile("^[a-zA-Z ]*$")
+lettersNumbersAndWhitespace = re.compile("^[\w ]*$")
+passwordPattern = re.compile("^[\w\W]*$")
 #variables
 
 #classes#
@@ -55,7 +56,7 @@ class user:
 			raise Exception("Wrong Password")
 
 	def addAttr(self,key,value,conf = False):
-		if(reMatch(key,onlyLettersAndWhitespace) and reMatch(value,lettersNumbersAndWhitespace)):
+		if(reMatch(key,onlyLettersAndWhitespace) and reMatch(value,passwordPattern)):
 			if key in self.attrs.keys():
 				if(conf):
 					self.attrs[key] = value
@@ -155,7 +156,7 @@ def reMatch(string,pattern):
 def hashPass(password):
 	password = str(password)
 	if(reMatch(password,passwordPattern)):
-		return hashlib.sha512(password).hexdigest()
+		return hashlib.sha512(password.encode("utf-8")).hexdigest()
 	else:
 		raise Exception("Malformed Password")
 
