@@ -17,17 +17,19 @@ logo = """ _)   _|
 #classes#
 
 #functions
-def user(userInst):
+def user(userInst,userList):
     if(not userInst.active):
         return None
-    """
+    firstScreen = """
     1. Enviar mensagem
     2. Adicionar alguém
     3. Entrar numa comunidade
     4. Criar uma comunidade
+    5. Admnistrar comunidade.
     5. Recuperar suas informações
     6. Deletar conta(Cuidado!)
     7. Editar perfil
+    8. Sair
     """
 #functions#
 
