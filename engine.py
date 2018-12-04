@@ -120,6 +120,7 @@ class users:
 			self.communities[groupInst.name] = groupInst
 		else:
 			raise Exception("Community name already in use")
+
 	def addUser(self,userInst):
 		if(not isIn(self.users,userInst.username)):
 			self.users[userInst.username] = userInst
@@ -129,8 +130,17 @@ class users:
 	def retrieveUser(self,name = "",login=False):
 		if(isIn(self.users,name)):
 			return self.users[name]
-		matches = {uName: userInst for uName, userInst in self.users.items() if uName==name}
+		matches = {uName: userInst for uName, userInst in self.users.items() if uName in name}
 		if(matches and not login):
+			return matches
+		else:
+			return None
+
+	def retrieveCommunity(self,name):
+		if(isIn(self.communities,name)):
+			return self.communities[name]
+		matches = {cName: commInst for cName, userInst in self.communities.items() if cName in name}
+		if(matches):
 			return matches
 		else:
 			return None

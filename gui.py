@@ -25,9 +25,9 @@ def findUser(userList,name):
     choice = None
     if(attempt):
         if(isinstance(attempt,list)):
-            print("Escolha qual amigo para mandar a mensagem: ")
+            print("Escolha qual amigo: ")
             for us in range(len(attempt)):
-                print(attempt[us],us)
+                print(attempt[us].name,us)
             choice = input("{}-{}".format(0,len(attempt)-1))
             try:
                 choice = int(choice)
@@ -37,6 +37,24 @@ def findUser(userList,name):
         elif(isinstance(attempt,engine.user)):
             choice = attempt
     return(choice)
+def findCommunity(commList,name):
+    attempt = userList.retrieveCommunity(name)
+    choice = None
+    if(attempt):
+        if(isinstance(attempt,list)):
+            print("Escolha qual comunidade: ")
+            for comm in range(len(attempt)):
+                print(attempt[comm].name,comm)
+            choice = input("{}-{}".format(0,len(attempt)-1))
+            try:
+                choice = int(choice)
+                choice = attempt[choice]
+            except:
+                input("Entrada invalida!")
+        elif(isinstance(attempt,engine.group)):
+            choice = attempt
+    return(choice)
+
 def userGui(userInst,userList):
     if(not userInst.active):
         return None
@@ -72,8 +90,24 @@ def userGui(userInst,userList):
                 print("Pronto! Convite enviado.")
             else:
                 print("Desculpe! Usuario nao encontrado")
-        # if(choice=='3'):
-        # if(choice=='4'):
+        if(choice=='3'):
+            qual = input("Qual o nome da panelinha? ")
+            choice = findCommunity(userList,qual)
+            if(choice):
+                choice.addMember(userInst)
+                print("Pronto! Agora você tem mais gente pra fofocar sobre.")
+            else:
+                print("Desculpe! Essa panelinha não existe... Ainda! Você pode cria-la.)")
+        if(choice=='4'):
+            name = input("Me diz o nome da panelinha: ")
+            desc = input("Aproveita e joga uma descrição na roda: ")
+            new = engine.group(name,desc,userInst)
+            att = engine.attempt(userList.addCommunity,new)
+            if(att == "Community name already in use"):
+                print("Esse nome já tem! Pega outro.")
+            else:
+                print("Prooonto, agora pode fofocar à vontade.")
+
         # if(choice=='5'):
         if(choice=='6'):
             for key,value in userInst.attrs.items():
