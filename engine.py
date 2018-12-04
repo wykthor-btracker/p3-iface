@@ -31,19 +31,20 @@ class messageBox:
 
 class user:
 	def __init__(self,active = False):
-		self.attrs = attrs
+		self.attrs = dict()
 		self.messageBox = messageBox()
 		self.active = active
 		self.friends = dict()
 		self.requests = dict()
 
 	def create(self,username,password,name):
-		if(not reMatch(onlyLetters,username)):
+		if(not reMatch(str(username),onlyLetters)):
 			raise Exception("Invalid username")
 		self.username = username
 		self.password = hashPass(password)
 		self.name = name
 		self.active = True
+		return(self)
 
 	def delete(self):
 		for friend in self.friends:
@@ -155,6 +156,8 @@ def checkMessage(message):
 	return message.issubset(fields)
 
 def attempt(function,*args):
+	if(not callable(function)):
+		raise Exception("{} is not a callable object.".format(function))
 	try:
 		res = function(*args)
 		return res

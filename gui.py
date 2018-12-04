@@ -37,7 +37,7 @@ def findUser(userList,name):
         elif(isinstance(attempt,engine.user)):
             choice = attempt
     return(choice)
-def user(userInst,userList):
+def userGui(userInst,userList):
     if(not userInst.active):
         return None
     firstScreen = """
@@ -46,13 +46,13 @@ def user(userInst,userList):
     3. Entrar numa comunidade
     4. Criar uma comunidade
     5. Admnistrar comunidade.
-    5. Recuperar suas informações
-    6. Deletar conta(Cuidado!)
-    7. Editar perfil
-    8. Sair
+    6. Recuperar suas informações
+    7. Deletar conta(Cuidado!)
+    8. Editar perfil
+    9. Sair
     """
     choice = '-1'
-    while(choice!="8"):
+    while(choice!="9"):
         print(firstScreen)
         choice = input()
         if(choice=='1'):
@@ -74,10 +74,11 @@ def user(userInst,userList):
                 print("Desculpe! Usuario nao encontrado")
         # if(choice=='3'):
         # if(choice=='4'):
-        if(choice=='5'):
+        # if(choice=='5'):
+        if(choice=='6'):
             for key,value in userInst.attrs.items():
                 print("{}\t= {}".format(key,value))
-        if(choice=='6'):
+        if(choice=='7'):
             choice = input("Tem certeza que deseja deletar sua conta?\nSentiremos sua falta!(E dos seus dados)\n(s/n)")
             if(choice.lower()=="s"):
                 print("Bye bye")
@@ -86,7 +87,7 @@ def user(userInst,userList):
                 print("Ufa!")
             else:
                 print("Do, or do not, there is no try. -- Master Yoda")
-        if(choice=='7'):
+        if(choice=='8'):
             print("Um por linha, insira seperado por :, o nome do atributo que deseja modificar, e o valor a ser salvo neste atributo.(Idade/lugar de nascimento/ideologia)\nQuando terminar, envie uma linha vazia.")
             text = "-1"
             while(text!=""):
@@ -110,13 +111,12 @@ def user(userInst,userList):
                         print("Sim ou nao, nao tem talvez. -- Eu, 2018")
                 elif(att=="Invalid string"):
                     print("Opa! Caracteres invalidos em algum lugar,\n use apenas letras e espaco para o atributo, e letras, numeros e caracteres especiais para o valor.")
-        else:
-            print("Essa opcao nao tem nao em")
 #functions#
 
 #main
 def main():
     choice = -1
+    userList = engine.users()
     while(choice!="3"):
         print(logo)
         choice = input()
@@ -125,30 +125,27 @@ def main():
             passw = input("Senha:")
             user = userList.retrieveUser(user)
             if(user):
-                att = engine.attempt(user.login(passw))
+                att = engine.attempt(user.login,passw)
                 if(isinstance(att,engine.user)):
-                    user(user)
+                    userGui(user,userList)
                 else:
                     print("Senha errada! Volte tres casas.")
             else:
                 print("Usuario nao encontrado! Tem certeza que digitou certo? Letras maiusculas e minusculas importam!")
         elif(choice=="2"):
-            username = input("Me diga um nome de usuario, ele deve ser unico!")
-            password = input("Me diz uma senha, pode ser qualquer uma, a gente nao vai espalhar, confia.")
-            name = input("Diz o nome pra teus amigos encontrarem, e os inimigos tambem")
+            username = input("Me diga um nome de usuario, ele deve ser unico! ")
+            password = input("Me diz uma senha, pode ser qualquer uma, a gente nao vai espalhar, confia. ")
+            name = input("Diz o nome pra teus amigos encontrarem, e os inimigos tambem ")
             new = engine.user()
-            new.create(username,password,name)
-    new = engine.user()
-    friend = engine.user()
-    friend.create("Pote","senha","Pote")
-    new.create("Joao","Senha","Joao")
-    new.addFriend(friend)
-    # friend.addFriend(new)
-    userL = engine.users()
-    userL.addUser(new)
-    userL.addUser(friend)
-    user(new,userL)
-    print(friend.messageBox.peek())
+            att = engine.attempt(new.create,username,password,name)
+            if(att == "Invalid username"):
+                print("Opa! Esse nome não vale, tenta outro.")
+            elif(isinstance(att,engine.user)):
+                print("Pronto! Agora é só fazer login e nos dar seus dados de graça")
+                userList.addUser(att)
+            else:
+                print("Opa! Algo deu errado.")
+                raise(Exception("{} is of wrong type".format(att)))
 
     return None
 #main#
