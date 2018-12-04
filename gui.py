@@ -108,7 +108,15 @@ def userGui(userInst,userList):
             else:
                 print("Prooonto, agora pode fofocar à vontade.")
 
-        # if(choice=='5'):
+        if(choice=='5'):
+            qual = input("Qual o nome da panelinha? ")
+            choice = findCommunity(userList,qual)
+            if(choice):
+                if(choice.owner = userInst):
+                    print("Olha quem tá aqui: ")
+                    for us in choice.members:
+                        print(us.name)
+                    
         if(choice=='6'):
             for key,value in userInst.attrs.items():
                 print("{}\t= {}".format(key,value))
