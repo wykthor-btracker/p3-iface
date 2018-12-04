@@ -9,6 +9,9 @@ logo = """ _)   _|
   |  __|  (   |  (      __/
  _| _|   \\__,_| \\___| \\___|
  Bem vindo ao iFace, cadastre-se ou faça login!
+ 1. Fazer login
+ 2. Cadastrar-se
+ 3. Sair(Sai nao, a gente tem bolo.)
 """
 #variables#
 
@@ -17,6 +20,23 @@ logo = """ _)   _|
 #classes#
 
 #functions
+def findUser(userList,name):
+    attempt = userList.retrieveUser(name)
+    choice = None
+    if(attempt):
+        if(isinstance(attempt,list)):
+            print("Escolha qual amigo para mandar a mensagem: ")
+            for us in range(len(attempt)):
+                print(attempt[us],us)
+            choice = input("{}-{}".format(0,len(attempt)-1))
+            try:
+                choice = int(choice)
+                choice = attempt[choice]
+            except:
+                input("Entrada invalida!")
+        elif(isinstance(attempt,engine.user)):
+            choice = attempt
+    return(choice)
 def user(userInst,userList):
     if(not userInst.active):
         return None
@@ -31,28 +51,104 @@ def user(userInst,userList):
     7. Editar perfil
     8. Sair
     """
-    if(choice=='1'):
-        name = input("Para quem deseja enviar a mensagem?")
-        attempt = userList.retrieveUser(name)
-        if(attempt):
-            if(isInstance(attempt,list)):
-                print("Escolha qual amigo para mandar a mensagem:")
-                for us in range(len(attempt)):
-                    print(attempt[us],us)
+    choice = '-1'
+    while(choice!="8"):
+        print(firstScreen)
+        choice = input()
+        if(choice=='1'):
+            name = input("Para quem deseja enviar a mensagem? ")
+            choice = findUser(userList,name)
+            if(choice):
+                message = input("Digite a mensagem: ")
+                userInst.sendMessage({"sender":userInst,"receiver":choice,"body":message})
+            else:
+                print("Desculpe! Nao conseguimos encontrar este usuario.")
 
-
-    # if(choice=='2'):
-    # if(choice=='3'):
-    # if(choice=='4'):
-    # if(choice=='5'):
-    # if(choice=='6'):
-    # if(choice=='7'):
-    # if(choice=='8'):
+        if(choice=='2'):
+            quem = input("Qual o nome dele(a)?")
+            choice = findUser(userList,quem)
+            if(choice):
+                userInst.addFriend(choice)
+                print("Pronto! Convite enviado.")
+            else:
+                print("Desculpe! Usuario nao encontrado")
+        # if(choice=='3'):
+        # if(choice=='4'):
+        if(choice=='5'):
+            for key,value in userInst.attrs.items():
+                print("{}\t= {}".format(key,value))
+        if(choice=='6'):
+            choice = input("Tem certeza que deseja deletar sua conta?\nSentiremos sua falta!(E dos seus dados)\n(s/n)")
+            if(choice.lower()=="s"):
+                print("Bye bye")
+                userInst.delete()
+            elif(choice.lower()=="n"):
+                print("Ufa!")
+            else:
+                print("Do, or do not, there is no try. -- Master Yoda")
+        if(choice=='7'):
+            print("Um por linha, insira seperado por :, o nome do atributo que deseja modificar, e o valor a ser salvo neste atributo.(Idade/lugar de nascimento/ideologia)\nQuando terminar, envie uma linha vazia.")
+            text = "-1"
+            while(text!=""):
+                text = input()
+                if(not ":" in text or text.count(":")>1):
+                    print("Linha invalida! Separe assim, idade:29")
+                    continue
+                else:
+                    text = text.split(":")
+                    text = [part.rstrip().lstrip() for part in text]
+                att = engine.attempt(userInst.addAttr,text[0],text[1])
+                if(att=="Not Confirmed"):
+                    choice = input("Esse atributo ja esta definido! Deseja sobreescrever?\n(s/n)")
+                    if(choice.lower()=="s"):
+                        att = engine.attempt(userInst.addAttr,text[0],text[1],True)
+                        if(att=="Invalid string"):
+                            print("Opa! Caracteres invalidos em algum lugar,\n use apenas letras e espaco para o atributo, e letras, numeros e caracteres especiais para o valor.")
+                    elif(choice.lower()=="n"):
+                        print("Ok! Nada mudou, feijoada.")
+                    else:
+                        print("Sim ou nao, nao tem talvez. -- Eu, 2018")
+                elif(att=="Invalid string"):
+                    print("Opa! Caracteres invalidos em algum lugar,\n use apenas letras e espaco para o atributo, e letras, numeros e caracteres especiais para o valor.")
+        else:
+            print("Essa opcao nao tem nao em")
 #functions#
 
 #main
 def main():
-    print(logo)
+    choice = -1
+    while(choice!="3"):
+        print(logo)
+        choice = input()
+        if(choice=="1"):
+            user = input("Usuario:")
+            passw = input("Senha:")
+            user = userList.retrieveUser(user)
+            if(user):
+                att = engine.attempt(user.login(passw))
+                if(isinstance(att,engine.user)):
+                    user(user)
+                else:
+                    print("Senha errada! Volte tres casas.")
+            else:
+                print("Usuario nao encontrado! Tem certeza que digitou certo? Letras maiusculas e minusculas importam!")
+        elif(choice=="2"):
+            username = input("Me diga um nome de usuario, ele deve ser unico!")
+            password = input("Me diz uma senha, pode ser qualquer uma, a gente nao vai espalhar, confia.")
+            name = input("Diz o nome pra teus amigos encontrarem, e os inimigos tambem")
+            new = engine.user()
+            new.create(username,password,name)
+    new = engine.user()
+    friend = engine.user()
+    friend.create("Pote","senha","Pote")
+    new.create("Joao","Senha","Joao")
+    new.addFriend(friend)
+    # friend.addFriend(new)
+    userL = engine.users()
+    userL.addUser(new)
+    userL.addUser(friend)
+    user(new,userL)
+    print(friend.messageBox.peek())
 
     return None
 #main#

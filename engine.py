@@ -7,6 +7,7 @@ import hashlib
 #imports#
 
 #variables#
+onlyLetters = re.compile("^[a-zA-Z]*$")
 onlyLettersAndWhitespace = re.compile("^[a-zA-Z ]*$")
 lettersNumbersAndWhitespace = re.compile("^[\w ]*$")
 passwordPattern = re.compile("^[\w\W]*$")
@@ -29,7 +30,7 @@ class messageBox:
 
 
 class user:
-	def __init__(self,attrs = dict(),active = False,name = "",username="",password=""):
+	def __init__(self,active = False):
 		self.attrs = attrs
 		self.messageBox = messageBox()
 		self.active = active
@@ -37,6 +38,8 @@ class user:
 		self.requests = dict()
 
 	def create(self,username,password,name):
+		if(not reMatch(onlyLetters,username)):
+			raise Exception("Invalid username")
 		self.username = username
 		self.password = hashPass(password)
 		self.name = name
@@ -94,7 +97,8 @@ class user:
 		return True
 
 class group:
-	def __init__(self,name,desc):
+	def __init__(self,name,desc,owner):
+		self.owner = owner
 		self.name = name
 		self.desc = desc
 		self.members = dict()
@@ -108,18 +112,24 @@ class group:
 class users:
 	def __init__(self):
 		self.users = dict()
+		self.communities = dict()
 
+	def addCommunity(self,groupInst):
+		if(not isIn(self.communities,groupInst.name)):
+			self.communities[groupInst.name] = groupInst
+		else:
+			raise Exception("Community name already in use")
 	def addUser(self,userInst):
 		if(not isIn(self.users,userInst.username)):
 			self.users[userInst.username] = userInst
 		else:
 			raise Exception("Username already in use.")
 
-	def retrieveUser(self,name = ""):
+	def retrieveUser(self,name = "",login=False):
 		if(isIn(self.users,name)):
 			return self.users[name]
-		matches = {uName: userInst for uName, userInst in self.users.iteritems() if uName==name}
-		if(matches):
+		matches = {uName: userInst for uName, userInst in self.users.items() if uName==name}
+		if(matches and not login):
 			return matches
 		else:
 			return None
@@ -146,7 +156,8 @@ def checkMessage(message):
 
 def attempt(function,*args):
 	try:
-		return function(*args)
+		res = function(*args)
+		return res
 	except Exception as e:
 		return e.args[0]
 
