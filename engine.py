@@ -36,6 +36,7 @@ class user:
 		self.active = active
 		self.friends = dict()
 		self.requests = dict()
+		self.groups = dict()
 
 	def create(self,username,password,name):
 		if(not reMatch(str(username),onlyLetters)):
@@ -107,6 +108,7 @@ class group:
 	def addMember(self,userInst):
 		if(userInst.active):
 			self.members[userInst.username] = userInst
+			userInst.groups[self.name] = self
 		else:
 			raise Exception("Inactive User")
 

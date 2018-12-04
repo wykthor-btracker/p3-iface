@@ -37,7 +37,7 @@ def findUser(userList,name):
         elif(isinstance(attempt,engine.user)):
             choice = attempt
     return(choice)
-def findCommunity(commList,name):
+def findCommunity(userList,name):
     attempt = userList.retrieveCommunity(name)
     choice = None
     if(attempt):
@@ -112,14 +112,30 @@ def userGui(userInst,userList):
             qual = input("Qual o nome da panelinha? ")
             choice = findCommunity(userList,qual)
             if(choice):
-                if(choice.owner = userInst):
+                if(choice.owner == userInst):
                     print("Olha quem tá aqui: ")
-                    for us in choice.members:
-                        print(us.name)
-                    
+                    for user,value in choice.members.items():
+                        print(user)
+                    print("Quer remover quem? Vazio para ninguém")
+                    name = input()
+                    if(engine.isIn(choice.members,name)):
+                        choice.members.pop(name)
+                    else:
+                        print("Esse aí não tem não, saraiva")
         if(choice=='6'):
+            print("Seus atributos:")
             for key,value in userInst.attrs.items():
                 print("{}\t= {}".format(key,value))
+            print("Suas comunidades:")
+            for key,value in userInst.groups.items():
+                print("{}\n\t{}".format(userInst.groups[key].name,userInst.groups[key].desc))
+            print("Seus amigos:")
+            for key,value in userInst.friends.items():
+                print(userInst.friends[key].name)
+            print("Suas mensagens:")
+            for message in userInst.messageBox.messages:
+                print("De:{}\nPara:{}\n{}".format(message["sender"].name,message["receiver"].name,message["body"]))
+
         if(choice=='7'):
             choice = input("Tem certeza que deseja deletar sua conta?\nSentiremos sua falta!(E dos seus dados)\n(s/n)")
             if(choice.lower()=="s"):
