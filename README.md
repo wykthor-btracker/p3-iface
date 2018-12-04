@@ -1,4 +1,4 @@
-# Folha de pagamento, para a matéria projeto de software:
+# iFace, feito para a matéria de projeto de software
 - Feito em python3
 
 #### para executar:
